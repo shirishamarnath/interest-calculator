@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Interest Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial;
+            padding: 20px;
+            max-width: 400px;
+            margin: auto;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+        }
+        .btn-clear {
+            background: #f44336;
+            color: white;
+        }
+        .btn-calc {
+            background: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>Interest Calculator</h2>
+
+<form method="post" action="/calculate">
+
+    <label>Given Date</label>
+    <input
+    type="text"
+    name="given_date"
+    placeholder="dd/mm/yy"
+    maxlength="8"
+    autocomplete="off"
+    oninput="formatDate(this)"
+    value="{{ given_date or '' }}"
+    required
+>
+
+
+    <label>Release Date</label>
+    <input
+    type="text"
+    name="release_date"
+    placeholder="dd/mm/yy"
+    maxlength="8"
+    autocomplete="off"
+    oninput="formatDate(this)"
+    value="{{ release_date or '' }}"
+    required
+>
+
+    <label>Amount</label>
+    <input
+        type="number"
+        step="0.01"
+        name="amount"
+        value="{{ amount or '' }}"
+        required
+    >
+
+    <label>Additional Interest Paid</label>
+    <input
+        type="number"
+        name="additional_interest"
+        value="{{ additional_interest or 0 }}"
+        min="0"
+    >
+
+    <button class="btn-calc" type="submit">Calculate</button>
+</form>
+
+<form method="get" action="/">
+    <button class="btn-clear" type="submit">Clear & Calculate Again</button>
+</form>
+
+{% if result %}
+<div class="result">
+    <p><b>Calendar months:</b> {{ result.calendar_months }}</p>
+    <p><b>Leftover months:</b> {{ result.leftover_months }}</p>
+    <p><b>Leftover days:</b> {{ result.leftover_days }}</p>
+    <p><b>Net interest:</b> {{ result.net_interest }}</p>
+    <p><b>Total payable:</b> {{ result.total_payable }}</p>
+</div>
+{% endif %}
+
+<script>
+function formatDate(input) {
+    let value = input.value.replace(/\D/g, "");
+
+    if (value.length > 2 && value.length <= 4) {
+        value = value.slice(0, 2) + "/" + value.slice(2);
+    } else if (value.length > 4) {
+        value = value.slice(0, 2) + "/" +
+                value.slice(2, 4) + "/" +
+                value.slice(4, 6);
+    }
+
+    input.value = value;
+}
+</script>
+
+</body>
+</html>
